@@ -1,8 +1,20 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
+from flask_mail import Mail, Message   # <-- added
 
 app = Flask(__name__)
 app.secret_key = 'replace-with-a-random-secret-key'
 
+# ---------- Email configuration (Gmail) ----------
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'josephkidenye@gmail.com'          # sending address
+app.config['MAIL_PASSWORD'] = 'your-gmail-app-password-here'    # use App Password, not regular password
+app.config['MAIL_DEFAULT_SENDER'] = 'josephkidenye@gmail.com'
+
+mail = Mail(app)
+
+# ---------- Blog data (unchanged) ----------
 blog_posts = [
     {
         'title': 'What to Do Immediately After a Car Accident',
@@ -24,6 +36,7 @@ blog_posts = [
     }
 ]
 
+# ---------- Routes (all unchanged except /contact) ----------
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -47,12 +60,50 @@ def blog():
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     if request.method == 'POST':
-        name = request.form.get('name')
-        email = request.form.get('email')
-        message = request.form.get('message')
-        # In production: send email or save to database
-        flash('Thank you! We will respond within 24 hours.', 'success')
-        return redirect(url_for('thank_you'))
+        # Get all form fields (matches the updated contact.html)
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip()
+        phone = request.form.get('phone', '').strip()
+        county = request.form.get('county', '').strip()
+        location = request.form.get('location', '').strip()
+        case_type = request.form.get('case_type', '').strip()
+        message_body = request.form.get('message', '').strip()
+
+        # Validate required fields
+        if not name or not email or not message_body:
+            flash('Please fill in all required fields (Name, Email, Message).', 'danger')
+            return redirect(url_for('contact'))
+
+        # Build the email content
+        subject = f"New Contact Form Submission from {name}"
+        body = f"""
+You received a new message from your website contact form.
+
+--------------------------------------------------
+Name:           {name}
+Email:          {email}
+Phone:          {phone if phone else 'Not provided'}
+County:         {county if county else 'Not provided'}
+Location:       {location if location else 'Not provided'}
+Case Type:      {case_type if case_type else 'Not specified'}
+--------------------------------------------------
+Message:
+{message_body}
+--------------------------------------------------
+        """
+
+        try:
+            msg = Message(subject=subject,
+                          recipients=['josephkidenye@gmail.com'],   # receiver
+                          body=body)
+            mail.send(msg)
+            flash('Thank you! We will respond within 24 hours.', 'success')
+            return redirect(url_for('thank_you'))
+        except Exception as e:
+            flash(f'Error sending message: {str(e)}. Please try again later.', 'danger')
+            return redirect(url_for('contact'))
+
+    # GET request – just show the form
     return render_template('contact.html')
 
 @app.route('/thank-you')
