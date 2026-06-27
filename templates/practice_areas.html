@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+
+{% block title %}Practice Areas{% endblock %}
+
+{% block content %}
+
+<!-- ============================================================
+     HERO BANNER – with background image
+     ============================================================ -->
+<section class="practice-hero" style="
+  background: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.70)),
+              url('{{ url_for('static', filename='images/hero-bg.jpeg') }}');
+  background-size: cover;
+  background-position: center 30%;
+  background-repeat: no-repeat;
+  padding: 5rem 0;
+  text-align: center;
+  color: #fff;
+  border-radius: 0 0 2rem 2rem;
+  margin-bottom: 2rem;
+">
+  <div class="container">
+    <h1 style="font-size: 3.5rem; font-weight: 700; text-shadow: 0 2px 12px rgba(0,0,0,0.4);">
+      Comprehensive Legal Services
+    </h1>
+    <p style="font-size: 1.3rem; max-width: 680px; margin: 0.5rem auto 0; opacity: 0.9; text-shadow: 0 1px 8px rgba(0,0,0,0.3);">
+      We bring deep expertise across every area of law that matters to you.
+    </p>
+  </div>
+</section>
+
+<!-- ============================================================
+     PRACTICE AREAS – ROW 1 (first 3)
+     ============================================================ -->
+<section class="py-4">
+  <div class="container">
+    <div class="row g-4">
+
+      <!-- 1. Personal Injury -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card practice-card h-100">
+          <div class="card-body">
+            <i class="fas fa-car-crash"></i>
+            <h4>Personal Injury</h4>
+            <p>We represent victims of car accidents, truck collisions, motorcycle crashes, slip and falls, medical malpractice, and wrongful death. Our team investigates every angle, works with medical experts, and negotiates aggressively with insurance companies. We don't get paid unless you win – so we fight for every dollar you deserve.</p>
+            <p class="mt-2"><strong>Common claims:</strong> auto accidents, workplace injuries, product liability, nursing home abuse.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Family Law -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card practice-card h-100">
+          <div class="card-body">
+            <i class="fas fa-heart-broken"></i>
+            <h4>Family Law</h4>
+            <p>Divorce, child custody, alimony, adoption, and domestic violence cases require both sensitivity and strength. We guide you through the emotional and legal complexities, always prioritising your children’s wellbeing and your financial future. Our approach combines mediation where possible with hard‑nosed litigation when necessary.</p>
+            <p class="mt-2"><strong>Services include:</strong> divorce mediation, custody agreements, prenuptial contracts, domestic violence protection orders.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Corporate Law -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card practice-card h-100">
+          <div class="card-body">
+            <i class="fas fa-building"></i>
+            <h4>Corporate Law</h4>
+            <p>From startup formation to mergers and acquisitions, we provide strategic legal counsel that protects your business. We draft and negotiate contracts, handle intellectual property registration, and represent you in commercial disputes. Our goal is to help you grow while minimising legal risks.</p>
+            <p class="mt-2"><strong>We assist with:</strong> entity formation, shareholder agreements, employment contracts, and regulatory compliance.</p>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- /row -->
+  </div> <!-- /container -->
+</section>
+
+<!-- ============================================================
+     MIDDLE SECTION – Lawyer image + firm discussion
+     ============================================================ -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row align-items-center g-5">
+
+      <!-- Left: Lawyer image (replace with your own photo) -->
+      <div class="col-lg-6 text-center">
+        <img src="{{ url_for('static', filename='images/attorneyjpeg.jpeg') }}"
+             alt="Lead Attorney Elena Sterling"
+             class="img-fluid rounded-4 shadow"
+             style="max-width: 100%; border: 150px ;">
+      </div>
+
+      <!-- Right: Discussion -->
+      <div class="col-lg-6">
+        <span class="badge bg-gold mb-3">Meet Your Advocate</span>
+        <h2 class="display-6 fw-bold" style="color: #1e1e2a;">Experience That Makes the Difference</h2>
+        <p style="font-size: 1.05rem; line-height: 1.8; color: #3d352b;">
+          <strong>Elena Sterling</strong>, founding partner, has spent over 25 years in the courtroom – and she brings that fire to every case.
+          She personally oversees every client’s strategy, ensuring no detail is overlooked.
+        </p>
+        <p style="font-size: 1.05rem; line-height: 1.8; color: #3d352b;">
+          At Sterling & Associates, we don't just practice law – we <strong>build relationships</strong>.
+          Our clients stay with us for life because we deliver results while treating them with dignity.
+          Whether you're facing a corporate battle or a personal crisis, we stand shoulder‑to‑shoulder with you.
+        </p>
+        <p style="font-size: 1.05rem; line-height: 1.8; color: #3d352b;">
+          <i class="fas fa-quote-left" style="color: #c9a84c;"></i>
+          <em>“We don't measure success by cases won – we measure it by lives rebuilt.”</em>
+        </p>
+        <a href="{{ url_for('contact') }}" class="btn btn-gold mt-3">Start Your Case Review</a>
+      </div>
+
+    </div> <!-- /row -->
+  </div> <!-- /container -->
+</section>
+
+<!-- ============================================================
+     PRACTICE AREAS – ROW 2 (last 3)
+     ============================================================ -->
+<section class="py-4">
+  <div class="container">
+    <div class="row g-4">
+
+      <!-- 4. Criminal Defense -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card practice-card h-100">
+          <div class="card-body">
+            <i class="fas fa-shield-alt"></i>
+            <h4>Criminal Defense</h4>
+            <p>Facing criminal charges is terrifying – but you don't have to face it alone. We defend DUI, drug offences, white‑collar crimes, federal charges, and more. We challenge every piece of evidence, protect your constitutional rights, and strive for dismissals, reduced sentences, or acquittals. Your freedom is our priority.</p>
+            <p class="mt-2"><strong>We handle:</strong> traffic violations, misdemeanours, felonies, and federal investigations.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Real Estate Law -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card practice-card h-100">
+          <div class="card-body">
+            <i class="fas fa-home"></i>
+            <h4>Real Estate Law</h4>
+            <p>Whether you're buying your first home, developing commercial property, or resolving a landlord‑tenant dispute, we ensure your interests are protected. We review contracts, handle title issues, and litigate property disputes. Our deep understanding of Kenyan and international property law gives you an edge.</p>
+            <p class="mt-2"><strong>Services include:</strong> property purchases, lease agreements, zoning appeals, and boundary disputes.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Employment Law -->
+      <div class="col-md-6 col-lg-4">
+        <div class="card practice-card h-100">
+          <div class="card-body">
+            <i class="fas fa-briefcase"></i>
+            <h4>Employment Law</h4>
+            <p>We stand up for employees who have faced wrongful termination, discrimination, sexual harassment, or wage theft. We also advise employers on compliance, drafting employee handbooks, and handling disciplinary matters. Our balanced approach ensures fair treatment for all.</p>
+            <p class="mt-2"><strong>We cover:</strong> workplace discrimination, contract disputes, whistleblower claims, and severance negotiations.</p>
+          </div>
+        </div>
+      </div>
+
+    </div> <!-- /row -->
+  </div> <!-- /container -->
+</section>
+
+<!-- Optional extra CTA -->
+<section class="py-4 text-center">
+  <div class="container">
+    <p class="lead">Not sure which practice area fits your situation?</p>
+    <a href="{{ url_for('contact') }}" class="btn btn-outline-gold btn-lg">We'll help you find the right path</a>
+  </div>
+</section>
+
+{% endblock %}
