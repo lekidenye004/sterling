@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Our Attorneys{% endblock %}
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="section-title"><h2>Meet Our Legal Team</h2></div>
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card attorney-card">
+          <img src="{{ url_for('static', filename='images/attorneyjpeg.jpeg') }}" alt="Jonathan Sterling">
+          <div class="card-body text-center"><h4>Jonathan Sterling</h4><p class="text-muted">Founding Partner</p><p>30+ years of trial experience.</p></div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card attorney-card">
+          <img src="{{ url_for('static', filename='images/hero-bg.jpeg') }}" alt="Elena Vasquez">
+          <div class="card-body text-center"><h4>Elena Vasquez</h4><p class="text-muted">Senior Partner</p><p>Family law & mediation expert.</p></div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card attorney-card">
+          <img src="{{ url_for('static', filename='images/attorneyjpeg.jpeg') }}" alt="Michael Chen">
+          <div class="card-body text-center"><h4>Michael Chen</h4><p class="text-muted">Associate</p><p>Skilled criminal defense litigator.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
