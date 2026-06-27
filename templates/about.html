@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}About Our Firm{% endblock %}
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6 mb-4">
+        <h1>Our Story</h1>
+        <p class="lead">Every client deserves the highest quality legal representation.</p>
+        <p>Since 1998, Sterling & Associates has been a fierce advocate for individuals and businesses. Our attorneys include former prosecutors and corporate litigators united by a commitment to justice.</p>
+      </div>
+      <div class="col-lg-6">
+        <img src="{{ url_for('static', filename='images/courtroom.jpg') }}" alt="Courtroom" class="img-fluid rounded shadow">
+      </div>
+    </div>
+  </div>
+</section>
+<section class="py-5 bg-light text-center">
+  <div class="section-title"><h2>Our Core Values</h2></div>
+  <div class="row g-4">
+    <div class="col-md-4"><i class="fas fa-balance-scale fa-3x mb-3" style="color:var(--gold);"></i><h4>Integrity</h4><p>Honest and ethical, always.</p></div>
+    <div class="col-md-4"><i class="fas fa-star fa-3x mb-3" style="color:var(--gold);"></i><h4>Excellence</h4><p>The best outcome in every case.</p></div>
+    <div class="col-md-4"><i class="fas fa-hand-holding-heart fa-3x mb-3" style="color:var(--gold);"></i><h4>Compassion</h4><p>We listen and fight personally for you.</p></div>
+  </div>
+</section>
+{% endblock %}
