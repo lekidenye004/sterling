@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
-from flask_mail import Mail, Message   # <-- added
+from flask_mail import Mail, Message
+import os# <-- added
 
 app = Flask(__name__)
 app.secret_key = 'replace-with-a-random-secret-key'
@@ -109,6 +110,8 @@ Message:
 @app.route('/thank-you')
 def thank_you():
     return render_template('thank_you.html')
+    
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)  # host=0.0.0.0 is required on Render
