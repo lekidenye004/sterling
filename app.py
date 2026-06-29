@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
-from flask_mailman import Mail, EmailMessage as Message  # Updated for modern Flask 3.0 compatibility
+from flask_mailman import Mail, EmailMessage  # Cleaned up import
 import os
 
 app = Flask(__name__)
@@ -90,12 +90,16 @@ Message:
         """
 
         try:
-            msg = Message(
+            # Create the message explicitly using EmailMessage
+            msg = EmailMessage(
                 subject=subject,
-                to=['josephkidenye@gmail.com'],  # Changed recipients to to for Flask-Mailman compatibility
-                body=body
+                body=body,
+                from_email=app.config['MAIL_DEFAULT_SENDER'],
+                to=['josephkidenye@gmail.com']
             )
-            mail.send(msg)
+            # Send using the object's native send method
+            msg.send()
+            
             flash('Thank you! We will respond within 24 hours.', 'success')
             return redirect(url_for('thank_you'))
         except Exception as e:
