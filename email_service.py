@@ -1,27 +1,92 @@
+from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_mailman import Mail, EmailMessage
 import os
+from threading import Thread  # Imported to handle background execution
 
-# Initialize Mail without attaching it to an app yet
-mail = Mail()
+app = Flask(__name__)
+app.secret_key = 'replace-with-a-random-secret-key'
 
-def init_email_service(app):
-    """Configures the email system for the Flask app instance."""
-    app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-    app.config['MAIL_PORT'] = 587
-    app.config['MAIL_USE_TLS'] = True
-    app.config['MAIL_USE_SSL'] = False
-    
-    # Securely pulling credentials or falling back to hardcoded strings
-    app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', 'josephkidenye@gmail.com')
-    app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', 'pksrhxiadfrksjiz')
-    app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'josephkidenye@gmail.com')
-    
-    mail.init_app(app)
+# ---------- Email configuration (Gmail) ----------
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
 
-def send_contact_email(name, email, phone, county, location, case_type, message_body):
-    """Handles the structural compilation and dispatch of the contact form email."""
-    subject = f"New Contact Form Submission from {name}"
-    body = f"""
+# Using direct fallbacks to avoid NoneType errors
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', 'josephkidenye@gmail.com')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', 'pksrhxiadfrksjiz')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'josephkidenye@gmail.com')
+
+mail = Mail(app)
+
+# Helper function to process mail in the background
+def send_async_email(flask_app, msg):
+    with flask_app.app_context():
+        try:
+            msg.send()
+        except Exception as e:
+            print(f"Background email delivery failed: {str(e)}")
+
+# ---------- Blog data ----------
+blog_posts = [
+    {
+        'title': 'What to Do Immediately After a Car Accident',
+        'date': 'March 22, 2025',
+        'excerpt': 'Our personal injury team outlines the critical steps that protect your claim.',
+        'link': '#'
+    },
+    {
+        'title': 'High‑Net‑Worth Divorce: Protecting Your Assets',
+        'date': 'March 10, 2025',
+        'excerpt': 'Complex property division demands experienced legal guidance.',
+        'link': '#'
+    },
+    {
+        'title': '2025 Corporate Compliance Checklist',
+        'date': 'February 28, 2025',
+        'excerpt': 'Stay ahead of new regulations affecting your business.',
+        'link': '#'
+    }
+]
+
+# ---------- Routes ----------
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+@app.route('/practice-areas')
+def practice_areas():
+    return render_template('practice_areas.html')
+
+@app.route('/attorneys')
+def attorneys():
+    return render_template('attorneys.html')
+
+@app.route('/blog')
+def blog():
+    return render_template('blog.html', posts=blog_posts)
+
+@app.route('/contact', methods=['GET', 'POST'])
+def contact():
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip()
+        phone = request.form.get('phone', '').strip()
+        county = request.form.get('county', '').strip()
+        location = request.form.get('location', '').strip()
+        case_type = request.form.get('case_type', '').strip()
+        message_body = request.form.get('message', '').strip()
+
+        if not name or not email or not message_body:
+            flash('Please fill in all required fields (Name, Email, Message).', 'danger')
+            return redirect(url_for('contact'))
+
+        subject = f"New Contact Form Submission from {name}"
+        body = f"""
 You received a new message from your website contact form.
 
 Name:           {name}
@@ -33,13 +98,34 @@ Case Type:      {case_type if case_type else 'Not specified'}
 
 Message:
 {message_body}
-    """
-    
-    # Setup and trigger the email dispatch
-    msg = EmailMessage(
-        subject=subject,
-        body=body,
-        from_email=os.environ.get('MAIL_DEFAULT_SENDER', 'josephkidenye@gmail.com'),
-        to=[os.environ.get('MAIL_USERNAME', 'josephkidenye@gmail.com')]
-    )
-    msg.send()
+        """
+
+        try:
+            msg = EmailMessage(
+                subject=subject,
+                body=body,
+                from_email=app.config['MAIL_DEFAULT_SENDER'],
+                to=[app.config['MAIL_USERNAME']]
+            )
+            
+            # Spin up a background thread to handle the mailing process asynchronously
+            thr = Thread(target=send_async_email, args=[app, msg])
+            thr.start()
+            
+            # Instantly return success to the browser before Gmail locks up the request
+            flash('Thank you! We will respond within 24 hours.', 'success')
+            return redirect(url_for('thank_you'))
+            
+        except Exception as e:
+            flash(f'Error processing request: {str(e)}. Please try again later.', 'danger')
+            return redirect(url_for('contact'))
+
+    return render_template('contact.html')
+
+@app.route('/thank-you')
+def thank_you():
+    return render_template('thank_you.html')
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
