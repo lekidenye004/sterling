@@ -78,7 +78,7 @@ def contact():
 
     return render_template('contact.html')
 
-@app.route('/thank-you')
+@app.route('/thank_you')
 def thank_you():
     return render_template('thank_you.html')
 
