@@ -1,18 +1,22 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
-from flask_mailman import Mail, EmailMessage  # Cleaned up import
+from flask_mailman import Mail, EmailMessage
 import os
 
 app = Flask(__name__)
-app.secret_key = 'replace-with-a-random-secret-key'
+
+# Pull the secret key from Render environment variables (with a safe fallback)
+app.secret_key = os.environ.get('SECRET_KEY', 'default-safe-fallback-key-for-local-testing')
 
 # ---------- Email configuration (Gmail) ----------
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
-app.config['MAIL_USERNAME'] = 'josephkidenye@gmail.com'
-app.config['MAIL_PASSWORD'] = 'qhkrccmsuhkzpcph'
-app.config['MAIL_DEFAULT_SENDER'] = 'josephkidenye@gmail.com'
+
+# Pull your secure Gmail credentials safely from Render environment variables
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
+app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER')
 
 mail = Mail(app)
 
@@ -90,14 +94,12 @@ Message:
         """
 
         try:
-            # Create the message explicitly using EmailMessage
             msg = EmailMessage(
                 subject=subject,
                 body=body,
                 from_email=app.config['MAIL_DEFAULT_SENDER'],
-                to=['josephkidenye@gmail.com']
+                to=[app.config['MAIL_USERNAME']] # Sends directly to your configured username
             )
-            # Send using the object's native send method
             msg.send()
             
             flash('Thank you! We will respond within 24 hours.', 'success')
