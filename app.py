@@ -87,13 +87,12 @@ Case Type:      {case_type if case_type else 'Not specified'}
 
 Message:
 {message_body}
-
         """
 
         try:
             msg = Message(
                 subject=subject,
-                recipients=['josephkidenye@gmail.com'],
+                to=['josephkidenye@gmail.com'],  # Changed recipients to to for Flask-Mailman compatibility
                 body=body
             )
             mail.send(msg)
