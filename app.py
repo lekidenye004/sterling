@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
-from flask_mail import Mail, Message
+from flask_mailman import Mail, EmailMessage as Message  # Updated for modern Flask 3.0 compatibility
 import os
 
 app = Flask(__name__)
@@ -78,17 +78,16 @@ def contact():
         body = f"""
 You received a new message from your website contact form.
 
---------------------------------------------------
 Name:           {name}
 Email:          {email}
 Phone:          {phone if phone else 'Not provided'}
 County:         {county if county else 'Not provided'}
 Location:       {location if location else 'Not provided'}
 Case Type:      {case_type if case_type else 'Not specified'}
---------------------------------------------------
+
 Message:
 {message_body}
---------------------------------------------------
+
         """
 
         try:
