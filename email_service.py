@@ -13,7 +13,7 @@ def init_email_service(app):
     
     # Securely pulling credentials or falling back to hardcoded strings
     app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME', 'josephkidenye@gmail.com')
-    app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', 'qhkrccmsuhkzpcph')
+    app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD', 'pksrhxiadfrksjiz')
     app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER', 'josephkidenye@gmail.com')
     
     mail.init_app(app)
