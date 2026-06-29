@@ -78,9 +78,9 @@ def contact():
 
     return render_template('contact.html')
 
-@app.route('/thank_you')
+@app.route('/thankyou')
 def thank_you():
-    return render_template('thank_you.html')
+    return render_template('thankyou.html')
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
