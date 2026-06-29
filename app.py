@@ -1,24 +1,12 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
-from flask_mailman import Mail, EmailMessage
+from email_service import init_email_service, send_contact_email  # <-- Import your new email module
 import os
 
 app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY', 'replace-with-a-random-secret-key')
 
-# Pull the secret key from Render environment variables (with a safe fallback)
-app.secret_key = os.environ.get('SECRET_KEY', 'default-safe-fallback-key-for-local-testing')
-
-# ---------- Email configuration (Gmail) ----------
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USE_SSL'] = False
-
-# Pull your secure Gmail credentials safely from Render environment variables
-app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
-app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
-app.config['MAIL_DEFAULT_SENDER'] = os.environ.get('MAIL_DEFAULT_SENDER')
-
-mail = Mail(app)
+# Initialize the email configurations securely
+init_email_service(app)
 
 # ---------- Blog data ----------
 blog_posts = [
@@ -78,29 +66,9 @@ def contact():
             flash('Please fill in all required fields (Name, Email, Message).', 'danger')
             return redirect(url_for('contact'))
 
-        subject = f"New Contact Form Submission from {name}"
-        body = f"""
-You received a new message from your website contact form.
-
-Name:           {name}
-Email:          {email}
-Phone:          {phone if phone else 'Not provided'}
-County:         {county if county else 'Not provided'}
-Location:       {location if location else 'Not provided'}
-Case Type:      {case_type if case_type else 'Not specified'}
-
-Message:
-{message_body}
-        """
-
         try:
-            msg = EmailMessage(
-                subject=subject,
-                body=body,
-                from_email=app.config['MAIL_DEFAULT_SENDER'],
-                to=[app.config['MAIL_USERNAME']] # Sends directly to your configured username
-            )
-            msg.send()
+            # Simply call your clean standalone email function here!
+            send_contact_email(name, email, phone, county, location, case_type, message_body)
             
             flash('Thank you! We will respond within 24 hours.', 'success')
             return redirect(url_for('thank_you'))
