@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, flash, redirect, url_for
 from flask_mail import Mail, Message
-import os# <-- added
+import os
 
 app = Flask(__name__)
 app.secret_key = 'replace-with-a-random-secret-key'
@@ -9,13 +9,14 @@ app.secret_key = 'replace-with-a-random-secret-key'
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'
 app.config['MAIL_PORT'] = 587
 app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'josephkidenye@gmail.com'          # sending address
-app.config['MAIL_PASSWORD'] = 'qhkrccmsuhkzpcph'    # use App Password, not regular password
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USERNAME'] = 'josephkidenye@gmail.com'
+app.config['MAIL_PASSWORD'] = 'qhkrccmsuhkzpcph'
 app.config['MAIL_DEFAULT_SENDER'] = 'josephkidenye@gmail.com'
 
 mail = Mail(app)
 
-# ---------- Blog data (unchanged) ----------
+# ---------- Blog data ----------
 blog_posts = [
     {
         'title': 'What to Do Immediately After a Car Accident',
@@ -37,7 +38,7 @@ blog_posts = [
     }
 ]
 
-# ---------- Routes (all unchanged except /contact) ----------
+# ---------- Routes ----------
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -61,7 +62,6 @@ def blog():
 @app.route('/contact', methods=['GET', 'POST'])
 def contact():
     if request.method == 'POST':
-        # Get all form fields (matches the updated contact.html)
         name = request.form.get('name', '').strip()
         email = request.form.get('email', '').strip()
         phone = request.form.get('phone', '').strip()
@@ -70,12 +70,10 @@ def contact():
         case_type = request.form.get('case_type', '').strip()
         message_body = request.form.get('message', '').strip()
 
-        # Validate required fields
         if not name or not email or not message_body:
             flash('Please fill in all required fields (Name, Email, Message).', 'danger')
             return redirect(url_for('contact'))
 
-        # Build the email content
         subject = f"New Contact Form Submission from {name}"
         body = f"""
 You received a new message from your website contact form.
@@ -94,9 +92,11 @@ Message:
         """
 
         try:
-            msg = Message(subject=subject,
-                          recipients=['josephkidenye@gmail.com'],   # receiver
-                          body=body)
+            msg = Message(
+                subject=subject,
+                recipients=['josephkidenye@gmail.com'],
+                body=body
+            )
             mail.send(msg)
             flash('Thank you! We will respond within 24 hours.', 'success')
             return redirect(url_for('thank_you'))
@@ -104,14 +104,12 @@ Message:
             flash(f'Error sending message: {str(e)}. Please try again later.', 'danger')
             return redirect(url_for('contact'))
 
-    # GET request – just show the form
     return render_template('contact.html')
 
 @app.route('/thank-you')
 def thank_you():
     return render_template('thank_you.html')
-    
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)  # host=0.0.0.0 is required on Render
+    app.run(host='0.0.0.0', port=port)
